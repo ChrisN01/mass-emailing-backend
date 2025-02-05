@@ -65,6 +65,7 @@ class CsvProcessor implements CsvProcessorInterface
         fclose($handle);
         echo "Row not processed: " . json_encode($rowsNotProcessed) . "\n";
         echo "Row has correct number of columns and values: " . json_encode($csvData) . "\n";
-        //$this->repository->store($data, $message);
+        //TODO: Validar que no se inserten correos duplicados
+        $this->repository->store($csvData);
     }
 }

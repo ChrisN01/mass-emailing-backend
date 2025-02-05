@@ -4,5 +4,5 @@ namespace App\Repositories\Contracts;
 
 interface CsvRepositoryInterface
 {
-    public function store(array $data, ?string $message): void;
+    public function store(array $data): void;
 }

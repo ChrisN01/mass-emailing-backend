@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\DB;
 class CsvRepository implements CsvRepositoryInterface
 {
     protected array $expectedColumns = ['name', 'age', 'gender', 'phone', 'email'];
-    public function store(array $data, ?string $message): void
+    public function store(array $data): void
     {
-        DB::transaction(function () use ($data, $message)
+        DB::transaction(function () use ($data)
         {
             foreach ($data as $key => $value) {
                 Client::create([
