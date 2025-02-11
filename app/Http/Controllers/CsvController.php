@@ -34,8 +34,6 @@ class CsvController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-
-     //TODO: Validar que solo se admita un archivo
     public function store(StoreCsvRequest  $request)
     {
         $file = $request->file('file');

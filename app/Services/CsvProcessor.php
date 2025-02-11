@@ -6,19 +6,18 @@ use App\Exceptions\CsvDelimiterException;
 use App\Exceptions\CsvFormatException;
 use App\Exceptions\CsvOpenException;
 use App\Services\Contracts\CsvProcessorInterface;
-use App\Repositories\Contracts\CsvRepositoryInterface;
 use App\Validators\Contracts\CsvValidatorInterface;
 use Exception;
 use Illuminate\Http\UploadedFile;
 
 class CsvProcessor implements CsvProcessorInterface
 {
-    protected $repository;
+    protected $clientService;
     protected $validator;
 
-    public function __construct(CsvRepositoryInterface $repository, CsvValidatorInterface $validator)
+    public function __construct(ClientService $clientService, CsvValidatorInterface $validator)
     {
-        $this->repository = $repository;
+        $this->clientService = $clientService;
         $this->validator = $validator;
     }
 
@@ -63,9 +62,8 @@ class CsvProcessor implements CsvProcessorInterface
         }
 
         fclose($handle);
-        echo "Row not processed: " . json_encode($rowsNotProcessed) . "\n";
-        echo "Row has correct number of columns and values: " . json_encode($csvData) . "\n";
-        //TODO: Validar que no se inserten correos duplicados
-        $this->repository->store($csvData);
+       // echo "Row not processed: " . json_encode($rowsNotProcessed) . "\n";
+       // echo "Row has correct number of columns and values: " . json_encode($csvData) . "\n";
+        $this->clientService->storeClients($csvData);
     }
 }
