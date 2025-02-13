@@ -4,5 +4,7 @@ namespace App\Repositories\Contracts;
 
 interface CsvRepositoryInterface
 {
-    public function store(array $data): void;
+    public function storeBulkClients(array $data): void;
+
+    public function existsByEmail(string $email): bool;
 }

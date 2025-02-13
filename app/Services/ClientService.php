@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Repositories\Contracts\CsvRepositoryInterface;
-use App\Repositories\CsvRepository;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -17,19 +16,26 @@ class ClientService
         $this->csvRepository = $csvRepository;
     }
 
-    public function storeClients(array $clients): void
+    public function getSendEmails(array $clients): array
     {
-        $unsavedClient=[];
+        $unsavedClients=[];
+        $emailsToSend=[];
+        $newClients=[];
+        $clientsToEmail=null;
         foreach ($clients as $client) {
-
             try
             {
                 $this->validateClient($client);
-            
-                $this->csvRepository->store($client);
+                if($this->csvRepository->existsByEmail($client['email'])){
+                    $emailsToSend[] = $client;
+                    continue;
+                }
+                
+                $newClients[] = $client;
+
             } catch (ValidationException $e)
             {
-                $unsavedClient[] = $client;
+                $unsavedClients[] = $client;
                 Log::error('Error validating customer information: ', [
                     'email' => $client['email'],
                     'error' => $e->getMessage()
@@ -37,16 +43,20 @@ class ClientService
             }
 
         }
+
+        $this->csvRepository->storeBulkClients($newClients);
+        $clientsToEmail = array_merge($newClients, $emailsToSend);
+
+        return $clientsToEmail;
+
     }
 
     public function validateClient(array $client): void
     {
         $validator = Validator::make($client, [
-            'name' => 'required|string|max:255',
             'age' => 'required|integer|min:0',
             'gender' => 'required|string|in:M,F',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|unique:clients,email',
+            'email' => 'required|email',
         ]);
 
         if ($validator->fails()) {

@@ -12,16 +12,14 @@ use Illuminate\Http\UploadedFile;
 
 class CsvProcessor implements CsvProcessorInterface
 {
-    protected $clientService;
     protected $validator;
 
-    public function __construct(ClientService $clientService, CsvValidatorInterface $validator)
+    public function __construct(CsvValidatorInterface $validator)
     {
-        $this->clientService = $clientService;
         $this->validator = $validator;
     }
 
-    public function process(UploadedFile $file, ?string $message): void
+    public function process(UploadedFile $file, ?string $message): array
     {
         $handle = fopen($file->getPathname(), "r");
 
@@ -64,6 +62,7 @@ class CsvProcessor implements CsvProcessorInterface
         fclose($handle);
        // echo "Row not processed: " . json_encode($rowsNotProcessed) . "\n";
        // echo "Row has correct number of columns and values: " . json_encode($csvData) . "\n";
-        $this->clientService->storeClients($csvData);
+
+       return $csvData;
     }
 }
