@@ -6,5 +6,5 @@ use Illuminate\Http\UploadedFile;
 
 interface CsvProcessorInterface
 {
-    public function process(UploadedFile $file, ?string $message):array;
+    public function process(UploadedFile $file):array;
 }

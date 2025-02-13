@@ -19,7 +19,7 @@ class CsvProcessor implements CsvProcessorInterface
         $this->validator = $validator;
     }
 
-    public function process(UploadedFile $file, ?string $message): array
+    public function process(UploadedFile $file): array
     {
         $handle = fopen($file->getPathname(), "r");
 

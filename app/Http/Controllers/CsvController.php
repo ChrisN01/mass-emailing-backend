@@ -43,7 +43,7 @@ class CsvController extends Controller
         $message= $request->input('message');
         $data = [];
         $sendEmails = [];
-        $data = $this->csvProcessor->process($file, $message);
+        $data = $this->csvProcessor->process($file);
         $sendEmails = $this->clientService->getSendEmails($data);
 
         //Se envian los correos
