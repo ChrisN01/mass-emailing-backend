@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCsvRequest;
 use App\Services\ClientService;
 use App\Services\Contracts\CsvProcessorInterface;
+use App\Services\SendEmailService;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -12,11 +13,13 @@ class CsvController extends Controller
 {
     protected $csvProcessor;
     protected $clientService;
+    protected $sendEmailService;
 
-    public function __construct(CsvProcessorInterface $csvProcessor, ClientService $clientService)
+    public function __construct(CsvProcessorInterface $csvProcessor, ClientService $clientService, SendEmailService $sendEmailService)
     {
         $this->csvProcessor=$csvProcessor;
         $this->clientService=$clientService;
+        $this->sendEmailService=$sendEmailService;
     }
     /**
      * Display a listing of the resource.
@@ -45,6 +48,8 @@ class CsvController extends Controller
         $sendEmails = [];
         $data = $this->csvProcessor->process($file);
         $sendEmails = $this->clientService->getSendEmails($data);
+
+        $this->sendEmailService->sendEmail($sendEmails, $message);
 
         //Se envian los correos
 
